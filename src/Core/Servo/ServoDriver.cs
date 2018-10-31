@@ -5,7 +5,7 @@ using Unosquare.RaspberryIO.Gpio;
 
 namespace Core.Servo
 {
-    public class ServoDriver
+    public class ServoDriver : IServoDriver
     {
         const int SERVO_MIN = 150;
         const int SERVO_MAX = 600;
