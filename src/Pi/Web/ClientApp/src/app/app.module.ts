@@ -7,10 +7,12 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { DataService } from './data.service';
+import { SodarDirective } from './sodar.directive';
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    SodarDirective,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

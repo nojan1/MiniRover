@@ -35,7 +35,7 @@ namespace Core
 
             var rnd = new Random();
             mock.Setup(x => x.GetRanges())
-                .Returns(() => Enumerable.Range(0, 10).Select(x => rnd.Next(-1,10)).ToArray());
+                .Returns(() => Enumerable.Range(0, 10).Select(x => rnd.Next(-1,50)).ToArray());
 
             return mock;
         }
