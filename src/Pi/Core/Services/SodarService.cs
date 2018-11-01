@@ -24,7 +24,7 @@ namespace Core.Services
                 Ranges = _sodarDriver.GetRanges()
             };
 
-            _bus.Send(updatePackage);
+            _bus.SendLocal(updatePackage);
         }
     }
 }

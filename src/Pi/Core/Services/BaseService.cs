@@ -20,7 +20,16 @@ namespace Core.Services
             {
                 while (!token.IsCancellationRequested)
                 {
-                    Loop();
+                    try
+                    {
+                        Loop();
+                    }
+                    catch (Exception e)
+                    {
+                        //TODO: Log this in a meaningful way
+                        Console.WriteLine($"[{this.GetType().Name}] Exception in loop: {e.Message}");
+                    }
+                    
                     await Task.Delay(_loopInterval, token);
                 }
             }, token);

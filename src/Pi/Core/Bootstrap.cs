@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Autofac;
 using Core.Runtime;
@@ -20,12 +21,23 @@ namespace Core
             else
             {
                 builder.Register<IServoDriver>(x => new Moq.Mock<IServoDriver>().Object).AsImplementedInterfaces();
-                builder.Register<ISodarDriver>(x => new Moq.Mock<ISodarDriver>().Object).AsImplementedInterfaces();
+                builder.Register<ISodarDriver>(x => CreateSodarDriverMock().Object).AsImplementedInterfaces();
             }
 
             RegisterServices(builder);
 
             builder.RegisterType<ServiceRunner>().SingleInstance();
+        }
+
+        private static Moq.Mock<ISodarDriver> CreateSodarDriverMock()
+        {
+            var mock = new Moq.Mock<ISodarDriver>();
+
+            var rnd = new Random();
+            mock.Setup(x => x.GetRanges())
+                .Returns(() => Enumerable.Range(0, 10).Select(x => rnd.Next(-1,10)).ToArray());
+
+            return mock;
         }
 
         private static void RegisterServices(ContainerBuilder builder)

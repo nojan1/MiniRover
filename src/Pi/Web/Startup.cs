@@ -12,9 +12,18 @@ using Rebus.Config;
 using Rebus;
 using Rebus.Transport.InMem;
 using Core.Runtime;
+using System.Threading.Tasks;
 
 namespace Web
 {
+    public class Korv : Rebus.Handlers.IHandleMessages<Core.Services.Models.SodarUpdate>
+    {
+        public Task Handle(Core.Services.Models.SodarUpdate message)
+        {
+            return Task.Run(() => Console.WriteLine($"Got message [{string.Join(',', message.Ranges)}]"));
+        }
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -22,13 +31,13 @@ namespace Web
             Configuration = configuration;
         }
 
-        public Startup(IContainer container, IConfiguration configuration) 
+        public Startup(IContainer container, IConfiguration configuration)
         {
             this.Container = container;
-                this.Configuration = configuration;
-               
+            this.Configuration = configuration;
+
         }
-                public IContainer Container { get; private set; }
+        public IContainer Container { get; private set; }
         public IConfiguration Configuration { get; }
 
         private ServiceRunner _serviceRunner;
@@ -47,9 +56,10 @@ namespace Web
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
+            builder.RegisterHandler<Korv>();
+
             ConfigureRebus(builder);
             Core.Bootstrap.Configure(builder);
-
             Container = builder.Build();
             return new AutofacServiceProvider(Container);
         }
