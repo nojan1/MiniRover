@@ -13,17 +13,10 @@ using Rebus;
 using Rebus.Transport.InMem;
 using Core.Runtime;
 using System.Threading.Tasks;
+using Web.Hubs;
 
 namespace Web
 {
-    public class Korv : Rebus.Handlers.IHandleMessages<Core.Services.Models.SodarUpdate>
-    {
-        public Task Handle(Core.Services.Models.SodarUpdate message)
-        {
-            return Task.Run(() => Console.WriteLine($"Got message [{string.Join(',', message.Ranges)}]"));
-        }
-    }
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -45,6 +38,7 @@ namespace Web
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSignalR();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -56,7 +50,7 @@ namespace Web
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
-            builder.RegisterHandler<Korv>();
+            builder.RegisterHandler<DataHubBusAdapter>();
 
             ConfigureRebus(builder);
             Core.Bootstrap.Configure(builder);
@@ -99,6 +93,11 @@ namespace Web
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<DataHub>("/data");
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
