@@ -1,0 +1,20 @@
+.log {
+    height:500px;
+    overflow: scroll;
+}
+
+.log ul {
+    list-style: none;
+}
+
+.log ul li{
+    padding:0;
+}
+
+.log ul li.warning {
+    color: orange;
+}
+
+.log ul li.error {
+    color: red;
+}
