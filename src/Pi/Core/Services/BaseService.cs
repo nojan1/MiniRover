@@ -14,7 +14,7 @@ namespace Core.Services
             _loopInterval = loopInterval;
         }
 
-        public void Run(CancellationToken token)
+        public Task Run(CancellationToken token)
         {
             _workingTask = Task.Run(async () =>
             {
@@ -24,6 +24,8 @@ namespace Core.Services
                     await Task.Delay(_loopInterval, token);
                 }
             }, token);
+
+            return _workingTask;
         }
 
         public abstract void Loop();

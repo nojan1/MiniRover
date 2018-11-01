@@ -1,3 +1,6 @@
+using System;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -5,6 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Rebus.Config;
+using Rebus;
+using Rebus.Transport.InMem;
+using Core.Runtime;
 
 namespace Web
 {
@@ -15,10 +22,18 @@ namespace Web
             Configuration = configuration;
         }
 
+        public Startup(IContainer container, IConfiguration configuration) 
+        {
+            this.Container = container;
+                this.Configuration = configuration;
+               
+        }
+                public IContainer Container { get; private set; }
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        private ServiceRunner _serviceRunner;
+
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -27,11 +42,44 @@ namespace Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            // Create the container builder.
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+
+            ConfigureRebus(builder);
+            Core.Bootstrap.Configure(builder);
+
+            Container = builder.Build();
+            return new AutofacServiceProvider(Container);
+        }
+
+        private void OnShutdown()
+        {
+            _serviceRunner.Stop();
+            Container.Dispose();
+        }
+
+        private void ConfigureRebus(ContainerBuilder builder)
+        {
+            var network = new InMemNetwork();
+
+            builder.RegisterRebus((configurer, context) => configurer
+                .Logging(l => l.ColoredConsole())
+                .Transport(t => t.UseInMemoryTransport(network, "inputque"))
+                .Options(o =>
+                {
+                    o.SetNumberOfWorkers(2);
+                    o.SetMaxParallelism(30);
+                }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ServiceRunner serviceRunner)
         {
+            _serviceRunner = serviceRunner;
+            applicationLifetime.ApplicationStopping.Register(OnShutdown);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -65,6 +113,8 @@ namespace Web
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
+            _serviceRunner.Start();
         }
     }
 }
