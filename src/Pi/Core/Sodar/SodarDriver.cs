@@ -17,12 +17,12 @@ namespace Core.Sodar
 
         public void Start()
         {
-
+            _device.WriteAddressByte(STATUS_REGISTER, 1);
         }
 
         public void Stop()
         {
-
+            _device.WriteAddressByte(STATUS_REGISTER, 0);
         }
 
         public bool GetIsActive()
