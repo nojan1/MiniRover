@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="rebus" Version="5.0.1" />
+    <PackageReference Include="rebus.autofac" Version="5.2.0" />
     <PackageReference Include="Unosquare.Raspberry.IO" Version="0.17.2" />
   </ItemGroup>
 
