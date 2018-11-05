@@ -4,12 +4,11 @@ using System.Runtime.InteropServices;
 using Autofac;
 using Core.Runtime;
 using Core.Services;
-using Core.Servo;
-using Core.Sodar;
+using Core.Drivers;
 
 namespace Core
 {
-    public static class Bootstrap
+    public static partial class Bootstrap
     {
         public static void Configure(ContainerBuilder builder)
         {
@@ -17,27 +16,16 @@ namespace Core
             {
                 builder.Register<ServoDriver>(x => new ServoDriver(0x40)).AsImplementedInterfaces().SingleInstance();
                 builder.Register<SodarDriver>(x => new SodarDriver(0x41)).AsImplementedInterfaces().SingleInstance();
+                builder.Register<IMUDriver>(x => new IMUDriver(0x43, MPU6050Scale.MPU6050_SCALE_2000DPS, MPU6050Range.MPU6050_RANGE_2G)).AsImplementedInterfaces().SingleInstance();
             }
             else
             {
-                builder.Register<IServoDriver>(x => new Moq.Mock<IServoDriver>().Object).AsImplementedInterfaces();
-                builder.Register<ISodarDriver>(x => CreateSodarDriverMock().Object).AsImplementedInterfaces();
+               RegisterMockImplementations(builder);
             }
 
             RegisterServices(builder);
 
             builder.RegisterType<ServiceRunner>().SingleInstance();
-        }
-
-        private static Moq.Mock<ISodarDriver> CreateSodarDriverMock()
-        {
-            var mock = new Moq.Mock<ISodarDriver>();
-
-            var rnd = new Random();
-            mock.Setup(x => x.GetRanges())
-                .Returns(() => Enumerable.Range(0, 10).Select(x => rnd.Next(-1,50)).ToArray());
-
-            return mock;
         }
 
         private static void RegisterServices(ContainerBuilder builder)

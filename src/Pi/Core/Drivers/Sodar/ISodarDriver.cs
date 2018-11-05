@@ -1,4 +1,4 @@
-namespace Core.Sodar
+namespace Core.Drivers
 {
     public interface ISodarDriver
     {

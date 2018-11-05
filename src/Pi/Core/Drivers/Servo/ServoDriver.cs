@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Unosquare.RaspberryIO;
 using Unosquare.RaspberryIO.Gpio;
 
-namespace Core.Servo
+namespace Core.Drivers
 {
     public class ServoDriver : IServoDriver
     {

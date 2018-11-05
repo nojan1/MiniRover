@@ -1,7 +1,7 @@
 using Unosquare.RaspberryIO;
 using Unosquare.RaspberryIO.Gpio;
 
-namespace Core.Sodar
+namespace Core.Drivers
 {
     public class SodarDriver : ISodarDriver
     {

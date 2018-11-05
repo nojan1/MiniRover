@@ -1,7 +1,7 @@
 using System.Linq;
 using Core.Services;
 using Core.Services.Models;
-using Core.Sodar;
+using Core.Drivers;
 using Moq;
 using Rebus.TestHelpers;
 using Rebus.TestHelpers.Events;

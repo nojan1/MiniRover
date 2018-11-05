@@ -1,3 +1,8 @@
 {
-    "dotnet-test-explorer.testProjectPath": "src/Pi/Core.Tests"
+    "dotnet-test-explorer.testProjectPath": "src/Pi/Core.Tests",
+    "files.associations": {
+        "functional": "cpp",
+        "system_error": "cpp",
+        "xtr1common": "cpp"
+    }
 }

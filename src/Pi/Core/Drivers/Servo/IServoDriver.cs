@@ -1,4 +1,4 @@
-namespace Core.Servo
+namespace Core.Drivers
 {
     public interface IServoDriver
     {

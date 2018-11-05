@@ -7,5 +7,10 @@ import { DataService } from '../data.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  constructor(public dataService: DataService) { }
+
+  public imuReading: any = {};
+
+  constructor(public dataService: DataService) {
+    dataService.imuUpdated.subscribe(x => this.imuReading = x);
+  }
 }

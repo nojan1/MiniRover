@@ -1,6 +1,6 @@
 using System;
 using Core.Services.Models;
-using Core.Sodar;
+using Core.Drivers;
 using Rebus.Bus;
 
 namespace Core.Services
