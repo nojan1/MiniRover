@@ -41,13 +41,15 @@ void loop()
 {
     if (status)
     {
-        //TODO: Do we need to disable interupts during getDistance?
+
         int servoPosition = SERVO_MIN + ((SERVO_MAX - SERVO_MIN) * ((float)sweepPosition / NUM_SAMPLES));
 
         servo.write(servoPosition);
         delay(15);
 
+        //TODO: Stop interupt
         ranges[sweepPosition] = getDistance();
+        //TODO: Start interupt
 
         sweepPosition += sweepDirection;
 

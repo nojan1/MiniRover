@@ -1,10 +1,15 @@
 import { Directive, ElementRef } from '@angular/core';
 import { DataService } from './data.service';
 
+const MAX_DISTANCE = 50;
+const START_ANGLE = -180;
+const END_ANGLE = 0;
+
 @Directive({
   selector: '[appSodar]'
 })
 export class SodarDirective {
+
 
   private ctx: CanvasRenderingContext2D
   private width: number;
@@ -20,49 +25,52 @@ export class SodarDirective {
 
   private redraw(data: any) {
     let ranges = data.ranges as number[];
-    let max = Math.max(...ranges.filter(x => x > 0));
-    let min = Math.min(...ranges.filter(x => x > 0));
-    let middle = (max - min) / 2;
-
-    let startAngle = -180;
-    let endAngle = 0;
-    let angleStep = Math.abs(endAngle - startAngle) / (ranges.length - 1);
-
-    let zoom = (this.width * 0.4) / max;
 
     let center = [this.width / 2, this.height / 2];
+    let maxRadius = (this.width / 2) * 0.9;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
-
-    //Draw distance circles
-    this.ctx.strokeStyle = "gray";
-    this.drawDistanceCircle(max, zoom, center);
-    this.drawDistanceCircle(middle, zoom, center);
-    this.drawDistanceCircle(min, zoom, center);
-
-    this.ctx.strokeStyle = "black";
-    //Draw spokes
-    for (let i = 0; i < ranges.length; i++) {
-      if (ranges[i] < 1)
-        continue;
-
-      let angle = startAngle + (angleStep * i);
-      let x = (Math.cos(angle * (Math.PI / 180)) * ranges[i] * zoom) + center[0];
-      let y = (Math.sin(angle * (Math.PI / 180)) * ranges[i] * zoom) + center[1];
-
-      this.ctx.beginPath();
-      this.ctx.moveTo(center[0], center[1]);
-      this.ctx.lineTo(x, y);
-      this.ctx.stroke();
-    }
-
+    this.drawDistanceRangeMarkings(ranges, maxRadius, center);
+    this.drawDistanceCircles(5, maxRadius, center);
   }
 
-  drawDistanceCircle(radius: number, zoom: number, center: number[]) {
-    this.ctx.beginPath();
-    this.ctx.arc(center[0], center[1], radius * zoom, 0, 2 * Math.PI);
-    this.ctx.stroke();
+  drawDistanceRangeMarkings(ranges: number[], maxRadius: number, center: number[]): any {
+    let angleStep = Math.abs(END_ANGLE - START_ANGLE) / (ranges.length - 1);
 
-    this.ctx.strokeText(radius.toString(), center[0], center[1] + (radius * zoom));
+    let angleFor = (i) => START_ANGLE + (angleStep * i);
+
+    this.ctx.fillStyle = "red";
+    for (let i = 0; i < ranges.length; i++) {
+      if (ranges[i] < 1 || ranges[i] > MAX_DISTANCE)
+        continue;
+
+      let straightAngle = angleFor(i);
+      let startAngle = (straightAngle - ((straightAngle - angleFor(i - 1)) / 2)) * (Math.PI / 180);
+      let endAngle = (straightAngle + ((angleFor(i + 1) - straightAngle) / 2)) * (Math.PI / 180);
+      let radius = (ranges[i] / MAX_DISTANCE) * maxRadius;
+
+      this.ctx.beginPath();
+      this.ctx.arc(center[0], center[1], maxRadius, startAngle, endAngle);
+      this.ctx.arc(center[0], center[1], radius, endAngle, startAngle, true);
+      this.ctx.fill();
+    }
+  }
+
+  drawDistanceCircles(numCircles: number, maxRadius: number, center: number[]) {
+    let circleSpacing = maxRadius / numCircles;
+    let distanceSpacing = MAX_DISTANCE / numCircles;
+
+    this.ctx.strokeStyle = "darkgreen";
+    for (let i = 0; i < numCircles; i++) {
+      let radius = maxRadius - (i * circleSpacing);
+      let distance = MAX_DISTANCE - (i * distanceSpacing);
+
+      this.ctx.beginPath();
+      this.ctx.arc(center[0], center[1], radius, 0, 2 * Math.PI);
+      this.ctx.stroke();
+
+      this.ctx.strokeText(distance.toString(), center[0] - 5, center[1] + radius + 10);
+    }
+
   }
 }
