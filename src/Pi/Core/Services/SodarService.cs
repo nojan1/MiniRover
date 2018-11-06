@@ -5,7 +5,7 @@ using Rebus.Bus;
 
 namespace Core.Services
 {
-    public class SodarService : BaseService
+    public class SodarService : IntervalServiceBase
     {
         private ISodarDriver _sodarDriver;
         private IBus _bus;

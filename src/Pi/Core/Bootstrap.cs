@@ -5,6 +5,8 @@ using Autofac;
 using Core.Runtime;
 using Core.Services;
 using Core.Drivers;
+using System.Reflection;
+using Core.Services.Models;
 
 namespace Core
 {
@@ -20,11 +22,13 @@ namespace Core
             }
             else
             {
-               RegisterMockImplementations(builder);
+                RegisterMockImplementations(builder);
             }
 
             RegisterServices(builder);
+            RegisterPrograms(builder);
 
+            builder.RegisterType<ProgramResolver>().AsImplementedInterfaces();
             builder.RegisterType<ServiceRunner>().SingleInstance();
         }
 
@@ -32,7 +36,19 @@ namespace Core
         {
             builder.RegisterAssemblyTypes(typeof(BaseService).Assembly)
                 .Where(t => t.IsSubclassOf(typeof(BaseService)))
-                .As<BaseService>();
+                .AsImplementedInterfaces()
+                .As<BaseService>()
+                .SingleInstance();
+        }
+
+        private static void RegisterPrograms(ContainerBuilder builder)
+        {
+            //TODO: Make sure it is not hard coded....
+            var assembly = Assembly.LoadFile("C:/Dev/Other/MiniRover/src/Pi/Programs/bin/Debug/netstandard2.0/Programs.dll");
+
+            builder.RegisterAssemblyTypes(assembly)
+                .Where(t => t.GetInterfaces().Contains(typeof(IProgram)))
+                .As<IProgram>();
         }
     }
 }

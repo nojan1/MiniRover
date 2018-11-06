@@ -4,7 +4,7 @@ using Rebus.Bus;
 
 namespace Core.Services
 {
-    public class IMUService : BaseService
+    public class IMUService : IntervalServiceBase
     {
         private IIMUDriver _imuDriver;
         private IBus _bus;

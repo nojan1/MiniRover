@@ -4,17 +4,17 @@ using System.Threading.Tasks;
 
 namespace Core.Services
 {
-    public abstract class BaseService
+    public abstract class IntervalServiceBase : BaseService
     {
         private Task _workingTask;
         private TimeSpan _loopInterval;
 
-        public BaseService(TimeSpan loopInterval)
+        public IntervalServiceBase(TimeSpan loopInterval) : base()
         {
             _loopInterval = loopInterval;
         }
 
-        public Task Run(CancellationToken token)
+        public override Task Run(CancellationToken token)
         {
             _workingTask = Task.Run(async () =>
             {
@@ -29,7 +29,7 @@ namespace Core.Services
                         //TODO: Log this in a meaningful way
                         Console.WriteLine($"[{this.GetType().Name}] Exception in loop: {e.Message}");
                     }
-                    
+
                     await Task.Delay(_loopInterval, token);
                 }
             }, token);
@@ -38,5 +38,12 @@ namespace Core.Services
         }
 
         public abstract void Loop();
+    }
+
+    public abstract class BaseService
+    {
+        public BaseService() { }
+
+        public abstract Task Run(CancellationToken token);
     }
 }
