@@ -53,7 +53,8 @@ namespace Web
             builder.RegisterHandler<DataHubBusAdapter>();
 
             ConfigureRebus(builder);
-            Core.Bootstrap.Configure(builder);
+            Core.Bootstrap.Configure(builder, new ConfigurationProgramAssemblyProvider(Configuration));
+            
             Container = builder.Build();
             return new AutofacServiceProvider(Container);
         }

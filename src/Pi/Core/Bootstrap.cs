@@ -12,7 +12,7 @@ namespace Core
 {
     public static partial class Bootstrap
     {
-        public static void Configure(ContainerBuilder builder)
+        public static void Configure(ContainerBuilder builder, IProgramAssemblyProvider programAssemblyProvider)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
@@ -26,9 +26,12 @@ namespace Core
             }
 
             RegisterServices(builder);
-            RegisterPrograms(builder);
+
+            if (programAssemblyProvider != null)
+                RegisterPrograms(builder, programAssemblyProvider);
 
             builder.RegisterType<ProgramResolver>().AsImplementedInterfaces();
+            builder.RegisterType<SensorPlatform>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<ServiceRunner>().SingleInstance();
         }
 
@@ -41,14 +44,18 @@ namespace Core
                 .SingleInstance();
         }
 
-        private static void RegisterPrograms(ContainerBuilder builder)
+        private static void RegisterPrograms(ContainerBuilder builder, IProgramAssemblyProvider programAssemblyProvider)
         {
-            //TODO: Make sure it is not hard coded....
-            var assembly = Assembly.LoadFile("C:/Dev/Other/MiniRover/src/Pi/Programs/bin/Debug/netstandard2.0/Programs.dll");
+            var assemblies = programAssemblyProvider.GetAbsolutePaths()
+                .Select(p => Assembly.LoadFile(p))
+                .ToArray();
 
-            builder.RegisterAssemblyTypes(assembly)
-                .Where(t => t.GetInterfaces().Contains(typeof(IProgram)))
-                .As<IProgram>();
+            if (assemblies.Any())
+            {
+                builder.RegisterAssemblyTypes(assemblies)
+                    .Where(t => t.GetInterfaces().Contains(typeof(IProgram)))
+                    .As<IProgram>();
+            }
         }
     }
 }

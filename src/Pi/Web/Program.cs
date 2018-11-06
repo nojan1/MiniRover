@@ -16,10 +16,12 @@ namespace Web
         public static void Main(string[] args)
         {
             var host = new WebHostBuilder()
+                .ConfigureAppConfiguration((context, config) => {
+                    config.AddJsonFile("appsettings.json");
+                })
                 .UseKestrel()
                 .ConfigureServices(services => services.AddAutofac())
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 
