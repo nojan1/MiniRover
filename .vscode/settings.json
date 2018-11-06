@@ -4,5 +4,10 @@
         "functional": "cpp",
         "system_error": "cpp",
         "xtr1common": "cpp"
-    }
+    },
+    "spellright.language": [],
+    "spellright.documentTypes": [
+        "latex",
+        "plaintext"
+    ]
 }

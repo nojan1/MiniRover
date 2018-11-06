@@ -70,7 +70,7 @@ namespace Web
             var network = new InMemNetwork();
 
             builder.RegisterRebus((configurer, context) => configurer
-                //.Logging(l => l.ColoredConsole())
+                .Logging(l => l.None())
                 .Transport(t => t.UseInMemoryTransport(network, "inputque"))
                 .Options(o =>
                 {
