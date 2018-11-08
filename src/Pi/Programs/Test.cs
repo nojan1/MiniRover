@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Core.Services.Models;
 
 namespace Programs
@@ -7,7 +8,7 @@ namespace Programs
     {
         public bool IsFinished {get; set;}
 
-        public void Loop()
+        public void Loop(CancellationToken cancellationToken)
         {
             Console.WriteLine("Entering loop");
             IsFinished = true;

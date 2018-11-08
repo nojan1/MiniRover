@@ -73,7 +73,7 @@ namespace Core.Services
                             }
                             else
                             {
-                                _program.Loop();
+                                _program.Loop(token);
                             }
 
                         }
