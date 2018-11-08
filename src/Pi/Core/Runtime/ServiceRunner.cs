@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Core.Services;
 using Core.Services.Models;
+using Serilog;
 
 namespace Core.Runtime
 {
@@ -15,10 +16,12 @@ namespace Core.Runtime
         private Task[] _tasks;
         private Task _monitoringTask;
         private IComponentContext _context;
+        private ILogger _logger;
 
-        public ServiceRunner(IComponentContext context)
+        public ServiceRunner(IComponentContext context, ILogger logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public void Start()
@@ -53,8 +56,7 @@ namespace Core.Runtime
                 if (faultedTask != null)
                 {
                     //Panic!
-                    //TODO: Log
-                    Console.WriteLine($"ERROR! Service task {faultedTask.Id} has faulted. Terminating all services");
+                    _logger.Fatal("Service task {faultedTask} has faulted. Terminating all services", faultedTask);
 
                     _cancellationTokenSource.Cancel();
 
@@ -66,7 +68,7 @@ namespace Core.Runtime
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine($"Exception in panic handler ({nameof(panicService)}): {e.Message}");
+                            _logger.Error("Exception in panic handler ({panicService}): {e}", panicService, e);
                         }
                     }
 

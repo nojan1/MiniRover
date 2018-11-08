@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Runtime;
 using Core.Services.Models;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using Rebus.Bus;
 
 namespace Web.Controllers
@@ -11,11 +12,13 @@ namespace Web.Controllers
     {
         private IProgramResolver _programResolver;
         private IBus _bus;
+        private ILogger _logger;
 
-        public ProgramController(IProgramResolver programResolver, IBus bus)
+        public ProgramController(IProgramResolver programResolver, IBus bus, ILogger logger)
         {
             _programResolver = programResolver;
             _bus = bus;
+            _logger = logger;
         }
 
         [HttpGet("")]
@@ -28,7 +31,10 @@ namespace Web.Controllers
         public IActionResult Run(string programName)
         {
             if (!_programResolver.IsKnownProgram(programName))
+            {
+                _logger.Information("Unknown program specified: {programName}", programName);
                 return NotFound();
+            }
 
             _bus.SendLocal(new ProgramRunRequest { ProgramName = programName });
             return Ok();

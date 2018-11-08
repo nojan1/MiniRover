@@ -14,6 +14,7 @@ using Rebus.Transport.InMem;
 using Core.Runtime;
 using System.Threading.Tasks;
 using Web.Hubs;
+using Serilog;
 
 namespace Web
 {
@@ -28,7 +29,6 @@ namespace Web
         {
             this.Container = container;
             this.Configuration = configuration;
-
         }
         public IContainer Container { get; private set; }
         public IConfiguration Configuration { get; }
@@ -37,6 +37,7 @@ namespace Web
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddSerilog();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSignalR();
 

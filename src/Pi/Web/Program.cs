@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Autofac.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Core;
 
 namespace Web
 {
@@ -20,6 +22,7 @@ namespace Web
                     config.AddJsonFile("appsettings.json");
                 })
                 .UseKestrel()
+                .UseSerilog()
                 .ConfigureServices(services => services.AddAutofac())
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
