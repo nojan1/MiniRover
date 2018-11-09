@@ -16,7 +16,7 @@ namespace Web
 
         public ICollection<string> GetAbsolutePaths()
         {
-            var programAssemblies = _configuration.GetSection("ProgramAssemblies")?.Get<string[]>() ?? new string[] {};
+            var programAssemblies = _configuration.GetSection("CoreConfiguration:ProgramAssemblies")?.Get<string[]>() ?? new string[] {};
             return programAssemblies
                 .Select(x => Path.GetFullPath(x))
                 .ToList();

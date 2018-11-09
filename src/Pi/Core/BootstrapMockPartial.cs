@@ -7,13 +7,6 @@ namespace Core
 {
     public static partial class Bootstrap
     {
-        private static void RegisterMockImplementations(ContainerBuilder builder)
-        {
-            builder.Register<IServoDriver>(x => new Moq.Mock<IServoDriver>().Object);
-            builder.Register<ISodarDriver>(x => CreateSodarDriverMock().Object);
-            builder.Register<IIMUDriver>(x => CreateIMUDriverMock().Object);
-        }
-
         private static Moq.Mock<ISodarDriver> CreateSodarDriverMock()
         {
             var mock = new Moq.Mock<ISodarDriver>();

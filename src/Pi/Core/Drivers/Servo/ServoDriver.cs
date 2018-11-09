@@ -34,14 +34,19 @@ namespace Core.Drivers
         const byte OUTDRV = 0x04;
 
         private I2CDevice _device;
+        private int _frequency;
 
         public ServoDriver(int address)
         {
             _device = Pi.I2C.AddDevice(address);
+            Init();
         }
 
         public void Init(int frequency = 60)
         {
+            // SoftwareReset();
+            // Task.Delay(5).Wait();
+
             SetAllPwm(0, 0);
 
             _device.WriteAddressByte(MODE2, OUTDRV);
@@ -67,7 +72,7 @@ namespace Core.Drivers
                 throw new ArgumentException($"Pulse must be between {SERVO_MIN} and {SERVO_MAX}", nameof(pulse));
 
             var pulse_length = 1000000;    // 1,000,000 us per second
-            pulse_length /= 60;       // 60 Hz
+            pulse_length /= _frequency;       // 60 Hz
             pulse_length /= 4096;     // 12 bits of resolution
 
             pulse *= 1000;
@@ -78,6 +83,8 @@ namespace Core.Drivers
 
         private void SetPwmFreq(int freq_hz)
         {
+            _frequency = freq_hz;
+
             var prescaleval = 25000000.0;    // 25MHz
             prescaleval /= 4096.0;       // 12-bit
             prescaleval /= ((double)freq_hz * 0.9); //Compensation: https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library/issues/11
@@ -111,6 +118,10 @@ namespace Core.Drivers
             _device.WriteAddressByte(ALL_LED_ON_H, (byte)(on >> 8));
             _device.WriteAddressByte(ALL_LED_OFF_L, (byte)(off & 0xFF));
             _device.WriteAddressByte(ALL_LED_OFF_H, (byte)(off >> 8));
+        }
+
+        private void SoftwareReset(){
+            _device.Write(0x06); 
         }
     }
 }

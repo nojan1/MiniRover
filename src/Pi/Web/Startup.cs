@@ -15,6 +15,7 @@ using Core.Runtime;
 using System.Threading.Tasks;
 using Web.Hubs;
 using Serilog;
+using Web.Models;
 
 namespace Web
 {
@@ -54,7 +55,10 @@ namespace Web
             builder.RegisterHandler<DataHubBusAdapter>();
 
             ConfigureRebus(builder);
-            Core.Bootstrap.Configure(builder, new ConfigurationProgramAssemblyProvider(Configuration));
+
+            var coreConfiguration = new CoreConfiguration();
+            Configuration.Bind("CoreConfiguration", coreConfiguration);
+            Core.Bootstrap.Configure(builder, new ConfigurationProgramAssemblyProvider(Configuration), coreConfiguration);
             
             Container = builder.Build();
             return new AutofacServiceProvider(Container);
