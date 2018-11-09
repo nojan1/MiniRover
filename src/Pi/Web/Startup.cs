@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Web.Hubs;
 using Serilog;
 using Web.Models;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Web
 {
@@ -85,10 +86,12 @@ namespace Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ServiceRunner serviceRunner)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ServiceRunner serviceRunner, IHubContext<LogHub> hubContext)
         {
             _serviceRunner = serviceRunner;
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
+
+            app.UseSerilog(hubContext);
 
             if (env.IsDevelopment())
             {
@@ -103,6 +106,7 @@ namespace Web
             app.UseSignalR(routes =>
             {
                 routes.MapHub<DataHub>("/data");
+                routes.MapHub<LogHub>("/log");
             });
 
             app.UseHttpsRedirection();

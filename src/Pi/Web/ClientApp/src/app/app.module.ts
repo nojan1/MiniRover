@@ -8,11 +8,14 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { DataService } from './data.service';
 import { SodarDirective } from './sodar.directive';
+import { LogComponent } from './log/log.component';
+import { LogService } from './log.service';
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SodarDirective,
+    LogComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -22,7 +25,7 @@ import { SodarDirective } from './sodar.directive';
       { path: '', component: HomeComponent, pathMatch: 'full' },
     ])
   ],
-  providers: [DataService],
+  providers: [DataService, LogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
