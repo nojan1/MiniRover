@@ -1,0 +1,7 @@
+<div class="well log">
+  <ul>
+    <li *ngFor="let event of logEvents.reverse()" class="{{event.level}}">
+      {{event.message}}
+    </li>
+  </ul>
+</div>
