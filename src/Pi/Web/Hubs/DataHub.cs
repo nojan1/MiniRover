@@ -1,14 +1,14 @@
 using System.Threading.Tasks;
 using Core.Services.Models;
 using Microsoft.AspNetCore.SignalR;
-using Rebus.Handlers;
 using Autofac;
 using Core.Drivers;
 using System;
+using Core.Runtime.CommandBus;
 
 namespace Web.Hubs
 {
-    public class DataHubBusAdapter : IHandleMessages<SodarUpdate>, IHandleMessages<IMUReading>, IHandleMessages<VisionUpdate>
+    public class DataHubBusAdapter : IHandleMessage<SodarUpdate>, IHandleMessage<IMUReading>, IHandleMessage<VisionUpdate>
     {
         private IHubContext<DataHub> _hubContext;
 

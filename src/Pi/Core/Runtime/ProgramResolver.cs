@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Autofac;
 using Core.Services.Models;
-using Rebus.Bus;
 
 namespace Core.Runtime
 {

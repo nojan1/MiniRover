@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Runtime;
+using Core.Runtime.CommandBus;
 using Core.Services.Models;
-using Rebus.Handlers;
 
 namespace Core.Services
 {
@@ -14,7 +14,7 @@ namespace Core.Services
         Stopped
     }
 
-    public class ProgramService : BaseService, IHandleMessages<ProgramRunRequest>, IHandleMessages<ProgramStopRequest>
+    public class ProgramService : BaseService, IHandleMessage<ProgramRunRequest>, IHandleMessage<ProgramStopRequest>
     {
         private IProgram _program;
         private ProgramState _programState = ProgramState.Stopped;

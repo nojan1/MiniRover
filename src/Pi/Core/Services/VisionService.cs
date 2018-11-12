@@ -2,9 +2,9 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Runtime.CommandBus;
 using Core.Services.Models;
 using OpenCvSharp;
-using Rebus.Bus;
 using Serilog;
 
 namespace Core.Services
@@ -16,9 +16,9 @@ namespace Core.Services
         private DateTime _nextFrame;
         private TimeSpan _frameDelay;
         private ILogger _logger;
-        private IBus _bus;
+        private ICommandBus _bus;
 
-        public VisionService(ILogger logger, IBus bus)
+        public VisionService(ILogger logger, ICommandBus bus)
         {
             _logger = logger;
             _bus = bus;

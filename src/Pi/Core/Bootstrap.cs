@@ -7,6 +7,7 @@ using Core.Services;
 using Core.Drivers;
 using System.Reflection;
 using Core.Services.Models;
+using Core.Runtime.CommandBus;
 
 namespace Core
 {
@@ -37,6 +38,7 @@ namespace Core
             builder.RegisterType<ProgramResolver>().AsImplementedInterfaces();
             builder.RegisterType<SensorPlatform>().AsImplementedInterfaces().AsSelf().SingleInstance();
             builder.RegisterType<ServiceRunner>().SingleInstance();
+            builder.RegisterType<CommandBus>().AsImplementedInterfaces().SingleInstance();
         }
 
         private static void RegisterServices(ContainerBuilder builder)

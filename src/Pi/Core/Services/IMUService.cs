@@ -1,15 +1,15 @@
 using System;
 using Core.Drivers;
-using Rebus.Bus;
+using Core.Runtime.CommandBus;
 
 namespace Core.Services
 {
     public class IMUService : IntervalServiceBase
     {
         private IIMUDriver _imuDriver;
-        private IBus _bus;
+        private ICommandBus _bus;
 
-        public IMUService(IIMUDriver imuDriver, IBus bus)
+        public IMUService(IIMUDriver imuDriver, ICommandBus bus)
             : base(TimeSpan.FromMilliseconds(500))
         {
             _imuDriver = imuDriver;
@@ -21,7 +21,7 @@ namespace Core.Services
             if(!_imuDriver.IsCalibrated)
                 _imuDriver.Calibrate(10);
 
-            _bus.SendLocal(_imuDriver.GetReading());
+            _bus.SendMessage(_imuDriver.GetReading());
         }
     }
 }

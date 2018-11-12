@@ -3,7 +3,7 @@ using Core.Runtime;
 using Core.Services.Models;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using Rebus.Bus;
+using Core.Runtime.CommandBus;
 
 namespace Web.Controllers
 {
@@ -11,10 +11,10 @@ namespace Web.Controllers
     public class ProgramController : Controller
     {
         private IProgramResolver _programResolver;
-        private IBus _bus;
+        private ICommandBus _bus;
         private ILogger _logger;
 
-        public ProgramController(IProgramResolver programResolver, IBus bus, ILogger logger)
+        public ProgramController(IProgramResolver programResolver, ICommandBus bus, ILogger logger)
         {
             _programResolver = programResolver;
             _bus = bus;
@@ -36,13 +36,13 @@ namespace Web.Controllers
                 return NotFound();
             }
 
-            _bus.SendLocal(new ProgramRunRequest { ProgramName = programName });
+            _bus.SendMessage(new ProgramRunRequest { ProgramName = programName });
             return Ok();
         }
 
         [HttpPost("stop")]
         public IActionResult Stop(){
-            _bus.SendLocal(new ProgramStopRequest());
+            _bus.SendMessage(new ProgramStopRequest());
             return Ok();
         }
     }

@@ -8,9 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rebus.Config;
-using Rebus;
-using Rebus.Transport.InMem;
 using Core.Runtime;
 using System.Threading.Tasks;
 using Web.Hubs;
@@ -53,9 +50,8 @@ namespace Web
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
-            builder.RegisterHandler<DataHubBusAdapter>();
-
-            ConfigureRebus(builder);
+            // builder.RegisterHandler<DataHubBusAdapter>();
+            builder.RegisterType<DataHubBusAdapter>().AsImplementedInterfaces();
 
             var coreConfiguration = new CoreConfiguration();
             Configuration.Bind("CoreConfiguration", coreConfiguration);
@@ -69,20 +65,6 @@ namespace Web
         {
             _serviceRunner.Stop();
             Container.Dispose();
-        }
-
-        private void ConfigureRebus(ContainerBuilder builder)
-        {
-            var network = new InMemNetwork();
-
-            builder.RegisterRebus((configurer, context) => configurer
-                .Logging(l => l.None())
-                .Transport(t => t.UseInMemoryTransport(network, "inputque"))
-                .Options(o =>
-                {
-                    o.SetNumberOfWorkers(2);
-                    o.SetMaxParallelism(30);
-                }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

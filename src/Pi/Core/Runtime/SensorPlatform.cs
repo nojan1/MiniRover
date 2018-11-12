@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using Core.Drivers;
+using Core.Runtime.CommandBus;
 using Core.Services.Models;
-using Rebus.Handlers;
 
 namespace Core.Runtime
 {
-    public class SensorPlatform : IHandleMessages<IMUReading>, IHandleMessages<SodarUpdate>
+    public class SensorPlatform : IHandleMessage<IMUReading>, IHandleMessage<SodarUpdate>
     {
         public IMUReading IMU { get; private set; }
         public SodarUpdate Sodar { get; private set; }

@@ -1,16 +1,16 @@
 using System;
 using Core.Services.Models;
 using Core.Drivers;
-using Rebus.Bus;
+using Core.Runtime.CommandBus;
 
 namespace Core.Services
 {
     public class SodarService : IntervalServiceBase
     {
         private ISodarDriver _sodarDriver;
-        private IBus _bus;
+        private ICommandBus _bus;
 
-        public SodarService(ISodarDriver sodarDriver, IBus bus)
+        public SodarService(ISodarDriver sodarDriver, ICommandBus bus)
             : base(TimeSpan.FromSeconds(1))
         {
             _sodarDriver = sodarDriver;
@@ -24,7 +24,7 @@ namespace Core.Services
                 Ranges = _sodarDriver.GetRanges()
             };
 
-            _bus.SendLocal(updatePackage);
+            _bus.SendMessage(updatePackage);
         }
     }
 }
