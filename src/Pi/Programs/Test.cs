@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Core.Drivers;
 using Core.Runtime;
 using Core.Services.Models;
+using Serilog;
 
 namespace Programs
 {
@@ -13,11 +14,13 @@ namespace Programs
 
         private SensorPlatform _sensorPlattform;
         private IServoDriver _servoDriver;
+        private ILogger _logger;
 
-        public Test(SensorPlatform sensorPlatform, IServoDriver servoDriver)
+        public Test(SensorPlatform sensorPlatform, IServoDriver servoDriver, ILogger logger)
         {
             _sensorPlattform = sensorPlatform;
             _servoDriver = servoDriver;
+            _logger = logger;
         }
 
         public void Loop(CancellationToken cancellationToken)
@@ -25,21 +28,21 @@ namespace Programs
             var rnd = new Random();
             while (!cancellationToken.IsCancellationRequested)
             {
-                Console.WriteLine(_sensorPlattform.IMU);
+                _logger.Information("IMU {IMU}", _sensorPlattform.IMU);
                 _servoDriver.SetServoPosition(0, rnd.Next(200, 500));
 
-                Task.Delay(500, cancellationToken).Wait();
+                Task.Delay(500, cancellationToken).ContinueWith(task => { }).Wait();
             }
         }
 
         public void Setup()
         {
-            Console.WriteLine("Entering setup");
+            _logger.Debug("Program Test entering setup");
         }
 
         public void Teardown()
         {
-            Console.WriteLine("Entering teardown");
+            _logger.Debug("Program Test entering teardown");
         }
     }
 }

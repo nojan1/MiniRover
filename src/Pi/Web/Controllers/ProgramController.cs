@@ -39,5 +39,11 @@ namespace Web.Controllers
             _bus.SendLocal(new ProgramRunRequest { ProgramName = programName });
             return Ok();
         }
+
+        [HttpPost("stop")]
+        public IActionResult Stop(){
+            _bus.SendLocal(new ProgramStopRequest());
+            return Ok();
+        }
     }
 }

@@ -10,6 +10,7 @@ import { DataService } from './data.service';
 import { SodarDirective } from './sodar.directive';
 import { LogComponent } from './log/log.component';
 import { LogService } from './log.service';
+import { ProgramService } from './program.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,7 +26,7 @@ import { LogService } from './log.service';
       { path: '', component: HomeComponent, pathMatch: 'full' },
     ])
   ],
-  providers: [DataService, LogService],
+  providers: [DataService, LogService, ProgramService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

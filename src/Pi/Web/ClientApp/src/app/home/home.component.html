@@ -9,6 +9,7 @@
       </div>
     </div>
   </div>
+
   <div class="col-xs-6">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -24,8 +25,26 @@
         Info
       </div>
       <div class="panel-body">
-        <b>Gyro: </b> {{imuReading.pitch}}&deg; {{imuReading.yaw}}&deg; {{imuReading.roll}}&deg; <br>
+        <b>Gyro: </b> Pith {{imuReading.pitch}}&deg; Roll {{imuReading.roll}}&deg; Yaw {{imuReading.yaw}}&deg; <br>
         <b>Compass: </b> 120&deg; <br>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Programs
+      </div>
+      <div class="panel-body">
+        <form class="form-inline">
+          <div class="form-group">
+            <select class="form-control" [(ngModel)]="selectedProgram" name="selectedProgram">
+              <option *ngFor="let program of programs" [ngValue]="program">{{program}}</option>
+            </select>
+          </div>
+
+          <button type="button" class="btn btn-primary" (click)="runProgram()">Run</button>
+          <button type="button" class="btn btn-warn" (click)="stopProgram()">Stop</button>
+        </form>
       </div>
     </div>
   </div>
@@ -33,6 +52,6 @@
 
 <div class="row">
   <div class="col-xs-12">
-   <app-log></app-log>
+    <app-log></app-log>
   </div>
 </div>

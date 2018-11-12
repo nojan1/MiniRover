@@ -11,17 +11,20 @@ namespace Web.Helpers
     public class SerilogSignalRBridge : ILogEventSink
     {
         private readonly IFormatProvider _formatProvider;
-        private readonly IHubContext<LogHub> _hubContext;
 
-        public SerilogSignalRBridge(IFormatProvider formatProvider, IHubContext<LogHub> hubContext)
+        public static IHubContext<LogHub> HubContext { get; set; }
+
+        public SerilogSignalRBridge(IFormatProvider formatProvider)
         {
             _formatProvider = formatProvider;
-            _hubContext = hubContext;
         }
 
         public async void Emit(LogEvent logEvent)
         {
-            await _hubContext.Clients.All.SendAsync("LogEventEmitted", new {
+            if(HubContext == null)
+                return;
+
+            await HubContext.Clients.All.SendAsync("LogEventEmitted", new {
                 Properties = logEvent.Properties,
                 Level = logEvent.Level.ToString(),
                 ExceptionMessage = logEvent.Exception?.Message,
@@ -34,10 +37,9 @@ namespace Web.Helpers
     {
         public static LoggerConfiguration SignalR(
                   this LoggerSinkConfiguration loggerConfiguration,
-                  IHubContext<LogHub> hubContext,
                   IFormatProvider formatProvider = null)
         {
-            return loggerConfiguration.Sink(new SerilogSignalRBridge(formatProvider, hubContext));
+            return loggerConfiguration.Sink(new SerilogSignalRBridge(formatProvider));
         }
     }
 }

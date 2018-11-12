@@ -91,7 +91,7 @@ namespace Web
             _serviceRunner = serviceRunner;
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
 
-            app.UseSerilog(hubContext);
+            Helpers.SerilogSignalRBridge.HubContext = hubContext;
 
             if (env.IsDevelopment())
             {

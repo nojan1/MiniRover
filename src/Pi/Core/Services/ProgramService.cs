@@ -20,17 +20,20 @@ namespace Core.Services
         private ProgramState _programState = ProgramState.Stopped;
         private object _programSwapLock = new { };
         private IProgramResolver _programResolver;
+        private CancellationTokenSource _programCancellationTokenSource;
 
-        public ProgramService(IProgramResolver programResolver, Rebus.Bus.IBus bus)
+        public ProgramService(IProgramResolver programResolver)
         {
             _programResolver = programResolver;
-
         }
 
         public Task Handle(ProgramRunRequest message)
         {
             return Task.Run(() =>
             {
+                if (message == null && _programCancellationTokenSource != null)
+                    _programCancellationTokenSource.Cancel();
+
                 lock (_programSwapLock)
                 {
                     if (_program != null && (_programState == ProgramState.Running || message == null))
@@ -64,16 +67,20 @@ namespace Core.Services
                         if (_program != null)
                         {
                             if (_programState == ProgramState.New)
+                            {
                                 _program.Setup();
+                                _programCancellationTokenSource = new CancellationTokenSource();
+                                _programState = ProgramState.Running;
+                            }
 
                             if (_program.IsFinished)
                             {
                                 _programState = ProgramState.Finished;
                                 _program.Teardown();
                             }
-                            else
+                            else if(_programState == ProgramState.Running)
                             {
-                                _program.Loop(token);
+                                _program.Loop(_programCancellationTokenSource.Token);
                             }
 
                         }
@@ -85,6 +92,7 @@ namespace Core.Services
 
                 if (_program != null && _programState == ProgramState.Running)
                 {
+                    _programCancellationTokenSource.Cancel();
                     _program.Teardown();
                 }
             });
