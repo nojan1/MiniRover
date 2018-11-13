@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+
 namespace Core.Services.Models
 {
     public class SodarUpdate
     {
-        public int[] Ranges { get; set; }
+        public IDictionary<int,int> Ranges { get; set; }
     }
 }

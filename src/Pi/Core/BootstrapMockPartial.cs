@@ -13,7 +13,7 @@ namespace Core
 
             var rnd = new Random();
             mock.Setup(x => x.GetRanges())
-                .Returns(() => Enumerable.Range(0, 10).Select(x => rnd.Next(-1, 50)).ToArray());
+                .Returns(() => Enumerable.Range(0, 10).ToDictionary(x => x * 18,x => rnd.Next(-1, 50)));
 
             return mock;
         }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unosquare.RaspberryIO;
 using Unosquare.RaspberryIO.Gpio;
 
@@ -30,7 +31,7 @@ namespace Core.Drivers
             return _device.ReadAddressByte(STATUS_REGISTER) == 1;
         }
 
-        public int[] GetRanges()
+        public IDictionary<int,int> GetRanges()
         {
             return null;
         }

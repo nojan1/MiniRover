@@ -1,6 +1,8 @@
 #include <Servo.h>
 #include <Wire.h>
 
+#define SERIAL_OUTPUT 1
+
 #define I2C_ADDRESS 0x50
 
 #define NUM_SAMPLES 10
@@ -41,7 +43,6 @@ void loop()
 {
     if (status)
     {
-
         int servoPosition = SERVO_MIN + ((SERVO_MAX - SERVO_MIN) * ((float)sweepPosition / NUM_SAMPLES));
 
         servo.write(servoPosition);
@@ -57,6 +58,12 @@ void loop()
             sweepDirection = -1;
         else if (sweepPosition == 0)
             sweepDirection = 1;
+
+        #ifdef SERIAL_OUTPUT
+        Serial.print(servoPosition, DEC);
+        Serial.print(" ");
+        Serial.println(ranges[sweepPosition], DEC);
+        #endif
     }
 }
 
@@ -100,7 +107,11 @@ void i2cRecieved(int numBytes)
         Wire.write(NUM_SAMPLES);
 
         for (int i = 0; i < NUM_SAMPLES; i++)
+        {
+            int angle = SERVO_MIN + ((SERVO_MAX - SERVO_MIN) * ((float)i / NUM_SAMPLES));
+            Wire.write(angle);
             Wire.write(ranges[i]);
+        }
 
         break;
     }

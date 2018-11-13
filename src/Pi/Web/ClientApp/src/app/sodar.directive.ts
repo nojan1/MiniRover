@@ -2,14 +2,11 @@ import { Directive, ElementRef } from '@angular/core';
 import { DataService } from './data.service';
 
 const MAX_DISTANCE = 50;
-const START_ANGLE = -180;
-const END_ANGLE = 0;
 
 @Directive({
   selector: '[appSodar]'
 })
 export class SodarDirective {
-
 
   private ctx: CanvasRenderingContext2D
   private width: number;
@@ -24,20 +21,24 @@ export class SodarDirective {
   }
 
   private redraw(data: any) {
-    let ranges = data.ranges as number[];
-
     let center = [this.width / 2, this.height / 2];
     let maxRadius = (this.width / 2) * 0.9;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
-    this.drawDistanceRangeMarkings(ranges, maxRadius, center);
+    this.drawDistanceRangeMarkings(data.ranges, maxRadius, center);
     this.drawDistanceCircles(5, maxRadius, center);
   }
 
-  drawDistanceRangeMarkings(ranges: number[], maxRadius: number, center: number[]): any {
-    let angleStep = Math.abs(END_ANGLE - START_ANGLE) / (ranges.length - 1);
+  drawDistanceRangeMarkings(rawRanges:any, maxRadius: number, center: number[]): any {
+    let angles = Object.keys(rawRanges).map(x => +x) as number[];
+    let ranges = Object.values(rawRanges as number[]);
 
-    let angleFor = (i) => START_ANGLE + (angleStep * i);
+    let maxAngle = Math.max(...angles) - 180;
+    let minAngle = Math.min(...angles) - 180;
+
+    let angleStep = Math.abs(maxAngle - minAngle) / (ranges.length - 1);
+
+    let angleFor = (i) => minAngle + (angleStep * i);
 
     this.ctx.fillStyle = "red";
     for (let i = 0; i < ranges.length; i++) {
