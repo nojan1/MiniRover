@@ -39,11 +39,10 @@ namespace Core.Services
 
                         var mat = videoCapture.RetrieveMat();
 
-                        //TODO: Fix performance
-                        // _bus.SendLocal(new VisionUpdate
-                        // {
-                        //     Image = mat.ToMemoryStream().ToArray()
-                        // });
+                        _bus.SendMessage(new VisionUpdate
+                        {
+                            Image = mat.ToMemoryStream().ToArray()
+                        });
 
                         _nextFrame += _frameDelay;
                     }

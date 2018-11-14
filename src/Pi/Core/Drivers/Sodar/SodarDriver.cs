@@ -33,7 +33,16 @@ namespace Core.Drivers
 
         public IDictionary<int,int> GetRanges()
         {
-            return null;
+            var ranges = new Dictionary<int, int>();
+
+            var numSamples = _device.ReadAddressByte(RANGE_REGISTER);
+            var sampleData = _device.Read(numSamples * 2);
+
+            for(int i = 0; i < sampleData.Length; i += 2){
+                ranges[sampleData[i]] = sampleData[i+1];
+            }
+
+            return ranges;
         }
     }
 }

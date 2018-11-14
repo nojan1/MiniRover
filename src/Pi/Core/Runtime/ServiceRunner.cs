@@ -78,10 +78,5 @@ namespace Core.Runtime
                 Task.Delay(50).Wait();
             }
         }
-
-        private void StopServiceTasks()
-        {
-
-        }
     }
 }
