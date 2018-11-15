@@ -8,6 +8,7 @@ using Core.Drivers;
 using System.Reflection;
 using Core.Services.Models;
 using Core.Runtime.CommandBus;
+using Core.Vision;
 
 namespace Core
 {
@@ -21,6 +22,18 @@ namespace Core
             if (programAssemblyProvider != null)
                 RegisterPrograms(builder, programAssemblyProvider);
 
+            RegisterVisionHandlers(builder);
+            RegisterRuntime(builder);
+        }
+
+        private static void RegisterVisionHandlers(ContainerBuilder builder)
+        {
+            builder.RegisterType<CameraStreamRepack>().AsImplementedInterfaces();
+            builder.RegisterType<DepthMapBuilder>().AsImplementedInterfaces();
+        }
+
+        private static void RegisterRuntime(ContainerBuilder builder)
+        {
             builder.RegisterType<ProgramResolver>().AsImplementedInterfaces();
             builder.RegisterType<SensorPlatform>().AsImplementedInterfaces().AsSelf().SingleInstance();
             builder.RegisterType<ServiceRunner>().SingleInstance();

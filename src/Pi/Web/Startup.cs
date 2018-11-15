@@ -50,12 +50,15 @@ namespace Web
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
-            // builder.RegisterHandler<DataHubBusAdapter>();
             builder.RegisterType<DataHubBusAdapter>().AsImplementedInterfaces();
 
             var coreConfiguration = new CoreConfiguration();
             Configuration.Bind("CoreConfiguration", coreConfiguration);
             Core.Bootstrap.Configure(builder, new ConfigurationProgramAssemblyProvider(Configuration), coreConfiguration);
+
+            var cameraConfiguration = new CameraConfiguration();
+            Configuration.Bind("CameraConfiguration", cameraConfiguration);
+            builder.Register(x => cameraConfiguration).AsImplementedInterfaces();
             
             Container = builder.Build();
             return new AutofacServiceProvider(Container);

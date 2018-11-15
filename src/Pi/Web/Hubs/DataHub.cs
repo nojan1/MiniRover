@@ -5,10 +5,11 @@ using Autofac;
 using Core.Drivers;
 using System;
 using Core.Runtime.CommandBus;
+using Core.Vision;
 
 namespace Web.Hubs
 {
-    public class DataHubBusAdapter : IHandleMessage<SodarUpdate>, IHandleMessage<IMUReading>, IHandleMessage<VisionUpdate>
+    public class DataHubBusAdapter : IHandleMessage<SodarUpdate>, IHandleMessage<IMUReading>, IHandleMessage<StreamFeedUpdate>
     {
         private IHubContext<DataHub> _hubContext;
 
@@ -17,13 +18,13 @@ namespace Web.Hubs
             _hubContext = hubContext;
         }
 
-        public Task Handle(SodarUpdate message) => 
+        public Task Handle(SodarUpdate message) =>
             _hubContext.Clients.All.SendAsync("SodarUpdate", message);
-            
-        public Task Handle(IMUReading message) => 
+
+        public Task Handle(IMUReading message) =>
             _hubContext.Clients.All.SendAsync("IMUReading", message);
 
-        public Task Handle(VisionUpdate message)
+        public Task Handle(StreamFeedUpdate message)
         {
             var imageBase64Data = Convert.ToBase64String(message.Image);
             return _hubContext.Clients.All.SendAsync("VisionUpdate", imageBase64Data);
