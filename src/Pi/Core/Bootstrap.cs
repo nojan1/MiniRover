@@ -28,7 +28,7 @@ namespace Core
 
         private static void RegisterVisionHandlers(ContainerBuilder builder)
         {
-            builder.RegisterType<CameraStreamRepack>().AsImplementedInterfaces();
+            builder.RegisterType<CameraStreamRepack>().AsImplementedInterfaces().AsSelf().SingleInstance();
             builder.RegisterType<DepthMapBuilder>().AsImplementedInterfaces();
         }
 

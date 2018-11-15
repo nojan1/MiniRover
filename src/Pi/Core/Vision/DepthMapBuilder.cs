@@ -25,6 +25,12 @@ namespace Core.Vision
             _commandBus = commandBus;
             _emitDelay = TimeSpan.FromMilliseconds(1000.0 / DEPTH_MAP_PER_SECONDS);
             _stereoMatcher = StereoBM.Create();
+
+            _stereoMatcher.MinDisparity = 4;
+            _stereoMatcher.NumDisparities = 128;
+            _stereoMatcher.BlockSize = 21;
+            _stereoMatcher.SpeckleRange = 16;
+            _stereoMatcher.SpeckleWindowSize = 45;
         }
 
         public Task Handle(CameraUpdate message)

@@ -14,7 +14,7 @@ namespace Core.Services
         Stopped
     }
 
-    public class ProgramService : BaseService, IHandleMessage<ProgramRunRequest>, IHandleMessage<ProgramStopRequest>
+    public class ProgramService : BaseService, IHandleMessage<ProgramRunMessage>, IHandleMessage<ProgramStopMessage>, IHandleRequest<ProgramStateRequestResponse, object>
     {
         private IProgram _program;
         private ProgramState _programState = ProgramState.Stopped;
@@ -27,7 +27,7 @@ namespace Core.Services
             _programResolver = programResolver;
         }
 
-        public Task Handle(ProgramRunRequest message)
+        public Task Handle(ProgramRunMessage message)
         {
             return Task.Run(() =>
             {
@@ -51,9 +51,17 @@ namespace Core.Services
             });
         }
 
-        public Task Handle(ProgramStopRequest message)
+        public Task Handle(ProgramStopMessage message)
         {
-            return Handle((ProgramRunRequest)null);
+            return Handle((ProgramRunMessage)null);
+        }
+
+        public Task HandleRequest(object parameter, TaskCompletionSource<ProgramStateRequestResponse> completionSource)
+        {
+            return Task.Run(() => completionSource.SetResult(new ProgramStateRequestResponse
+            {
+                State = _programState
+            }));
         }
 
         public override Task Run(CancellationToken token)
@@ -78,7 +86,7 @@ namespace Core.Services
                                 _programState = ProgramState.Finished;
                                 _program.Teardown();
                             }
-                            else if(_programState == ProgramState.Running)
+                            else if (_programState == ProgramState.Running)
                             {
                                 _program.Loop(_programCancellationTokenSource.Token);
                             }

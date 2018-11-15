@@ -11,6 +11,7 @@ import { SodarDirective } from './sodar.directive';
 import { LogComponent } from './log/log.component';
 import { LogService } from './log.service';
 import { ProgramService } from './program.service';
+import { CameraService } from './camera.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +27,7 @@ import { ProgramService } from './program.service';
       { path: '', component: HomeComponent, pathMatch: 'full' },
     ])
   ],
-  providers: [DataService, LogService, ProgramService],
+  providers: [DataService, LogService, ProgramService, CameraService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

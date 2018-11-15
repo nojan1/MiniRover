@@ -4,6 +4,7 @@ using Core.Services.Models;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Core.Runtime.CommandBus;
+using System.Threading.Tasks;
 
 namespace Web.Controllers
 {
@@ -36,14 +37,22 @@ namespace Web.Controllers
                 return NotFound();
             }
 
-            _bus.SendMessage(new ProgramRunRequest { ProgramName = programName });
+            _bus.SendMessage(new ProgramRunMessage { ProgramName = programName });
             return Ok();
         }
 
         [HttpPost("stop")]
-        public IActionResult Stop(){
-            _bus.SendMessage(new ProgramStopRequest());
+        public IActionResult Stop()
+        {
+            _bus.SendMessage(new ProgramStopMessage());
             return Ok();
+        }
+
+        [HttpGet("state")]
+        public async Task<IActionResult> GetStateAsync()
+        {
+            var state = await _bus.SendRequest<ProgramStateRequestResponse, object>(null);        
+            return Ok(state);
         }
     }
 }
