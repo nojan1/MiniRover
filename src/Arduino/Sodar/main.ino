@@ -6,11 +6,11 @@
 #define I2C_ADDRESS 0x50
 
 #define NUM_SAMPLES 10
-#define SERVO_MIN 0
-#define SERVO_MAX 180
+#define SERVO_MIN 10
+#define SERVO_MAX 170
 
-const int trigPin = 9;
-const int echoPin = 10;
+const int trigPin = 7;
+const int echoPin = 8;
 const int servoPin = 9;
 
 Servo servo;
@@ -31,7 +31,7 @@ void setup()
 
     sweepPosition = 0;
     sweepDirection = 1;
-    status = false;
+    status = true;
 
     Wire.begin(I2C_ADDRESS);
     Wire.onReceive(i2cRecieved);
