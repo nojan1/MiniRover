@@ -71,14 +71,14 @@ namespace Core.Drivers
             if (pulse < SERVO_MIN || pulse > SERVO_MAX)
                 throw new ArgumentException($"Pulse must be between {SERVO_MIN} and {SERVO_MAX}", nameof(pulse));
 
-            var pulse_length = 1000000;    // 1,000,000 us per second
-            pulse_length /= _frequency;       // 60 Hz
-            pulse_length /= 4096;     // 12 bits of resolution
+            var pulse_length = 1000000.0;    // 1,000,000 us per second
+            pulse_length /= (double)_frequency;       // 60 Hz
+            pulse_length /= (double)4096;     // 12 bits of resolution
 
-            pulse *= 1000;
-            pulse /= pulse_length;
+            var calculatedPulse = (double)pulse * 1000.0;
+            calculatedPulse /= pulse_length;
 
-            SetPwm(channel, 0, pulse);
+            SetPwm(channel, 0, (int)calculatedPulse);
         }
 
         private void SetPwmFreq(int freq_hz)
