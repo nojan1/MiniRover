@@ -47,7 +47,7 @@ namespace Core.Drivers
             // SoftwareReset();
             // Task.Delay(5).Wait();
 
-            SetAllPwm(0, 0);
+            //SetAllPwm(0, 0);
 
             _device.WriteAddressByte(MODE2, OUTDRV);
             _device.WriteAddressByte(MODE1, ALLCALL);
@@ -61,6 +61,9 @@ namespace Core.Drivers
             Task.Delay(5).Wait(); // wait for oscillator
 
             SetPwmFreq(frequency);
+            
+            for(int i = 0; i < 16; i++)
+                SetServoPosition(i, SERVO_MIN + ((SERVO_MAX - SERVO_MIN) / 2));
         }
 
         public void SetServoPosition(int channel, int pulse)

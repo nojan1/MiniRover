@@ -81,29 +81,36 @@ namespace Core.Drivers
         {
             var normalizedGyro = ReadNormalizedGyro();
 
-            if (lastReading == null)
+            return new IMUReading
             {
-                lastReadingTime = DateTime.Now;
+                Pitch = normalizedGyro.YAxis,
+                Roll = normalizedGyro.XAxis,
+                Yaw = normalizedGyro.ZAxis
+            };
 
-                return lastReading = new IMUReading
-                {
-                    Pitch = normalizedGyro.YAxis,
-                    Roll = normalizedGyro.XAxis,
-                    Yaw = normalizedGyro.ZAxis
-                };
-            }
-            else
-            {
-                var timeDiff = DateTime.Now - lastReadingTime;
-                lastReadingTime = DateTime.Now;
+            // if (lastReading == null)
+            // {
+            //     lastReadingTime = DateTime.Now;
 
-                return lastReading = new IMUReading
-                {
-                    Pitch = lastReading.Pitch + (normalizedGyro.YAxis * timeDiff.TotalSeconds),
-                    Roll = lastReading.Roll + (normalizedGyro.XAxis * timeDiff.TotalSeconds),
-                    Yaw = lastReading.Yaw + (normalizedGyro.ZAxis * timeDiff.TotalSeconds)
-                };
-            }
+            //     return lastReading = new IMUReading
+            //     {
+            //         Pitch = normalizedGyro.YAxis,
+            //         Roll = normalizedGyro.XAxis,
+            //         Yaw = normalizedGyro.ZAxis
+            //     };
+            // }
+            // else
+            // {
+            //     var timeDiff = DateTime.Now - lastReadingTime;
+            //     lastReadingTime = DateTime.Now;
+
+            //     return lastReading = new IMUReading
+            //     {
+            //         Pitch = lastReading.Pitch + (normalizedGyro.YAxis * timeDiff.TotalSeconds),
+            //         Roll = lastReading.Roll + (normalizedGyro.XAxis * timeDiff.TotalSeconds),
+            //         Yaw = lastReading.Yaw + (normalizedGyro.ZAxis * timeDiff.TotalSeconds)
+            //     };
+            // }
         }
 
         public void Calibrate(int samples)
