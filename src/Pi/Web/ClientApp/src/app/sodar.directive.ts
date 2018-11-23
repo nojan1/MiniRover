@@ -1,7 +1,7 @@
 import { Directive, ElementRef } from '@angular/core';
 import { DataService } from './data.service';
 
-const MAX_DISTANCE = 50;
+const MAX_DISTANCE = 80;
 
 @Directive({
   selector: '[appSodar]'

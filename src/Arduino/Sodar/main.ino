@@ -5,9 +5,9 @@
 
 #define I2C_ADDRESS 0x50
 
-#define NUM_SAMPLES 10
-#define SERVO_MIN 10
-#define SERVO_MAX 170
+#define NUM_SAMPLES 20
+#define SERVO_MIN 15
+#define SERVO_MAX 165
 
 const int trigPin = 7;
 const int echoPin = 8;
@@ -46,7 +46,7 @@ void loop()
         int servoPosition = SERVO_MIN + ((SERVO_MAX - SERVO_MIN) * ((float)sweepPosition / NUM_SAMPLES));
 
         servo.write(servoPosition);
-        delay(15);
+        delay(30);
 
         //TODO: Stop interupt
         ranges[sweepPosition] = getDistance();
